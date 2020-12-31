@@ -4,7 +4,7 @@ import sys
 from bs4 import BeautifulSoup
 import threading
 import os
-import types
+import time
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -62,10 +62,13 @@ def readpath():
             t.start()
             threads.append(t)
             lef += 1
-            if lef >= line:
+            while lef >= line:
                 for t in threads:
-                    t.join()
-                lef = 0
+                    if not t.is_alive():
+                        lef -= 1
+                        
+                        break
+                time.sleep(5)
 
         for t in threads:
             t.join()
